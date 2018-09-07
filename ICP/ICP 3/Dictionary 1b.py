@@ -1,16 +1,27 @@
-A = input("The Input sequence is:")
-print("The Individual code sequences are:",[A[i:i+3] for i in range(0, len(A), 3)])
 import csv
-
-with open("codon.tsv") as tsvfile:
-    reader=csv.reader(tsvfile,delimiter='\t')
-    first_col=list(zip(*reader))[0]
-
-with open("codon.tsv") as tsvfile1:
-    reads=csv.reader(tsvfile1,delimiter='\t')
-    second_col=list(zip(*reads))[1]
+from collections import Counter
 
 wordfreq = {}
-for word in second_col:
-    wordfreq[word]= wordfreq.setdefault(word,0)+1
-print("The names and count of codons:", wordfreq)
+with open("codon.tsv") as tsvfile:
+  reader = csv.reader(tsvfile, delimiter='\t')
+  for row in reader:
+    try:
+        wordfreq[row[0]] = row[1]
+    except:
+      pass
+while True:
+  output = input(" Enter the input sequence: ")
+  if len(output)%3 != 0 :
+    print("Input Sequence is not valid")
+    continue
+
+  codons = [output[i:i+3] for i in range(0, len(output), 3)]
+  print("The individual codon sequence is: ", codons)
+  try:
+    codon_names = list(map(lambda x: wordfreq[x], codons))
+    break
+  except:
+    print("The codon sequence doesnot match with tsv file. Please give one other sequence")
+
+name_counts = Counter(codon_names)
+print("The names and count of codons: ", name_counts)
